@@ -1,7 +1,8 @@
 class Api::V1::RecipesController < ApplicationController
   protect_from_forgery
 
-  before_action :validate_recipe_presence
+  before_action :validate_recipe
+  before_action :validate_steps, only: [:create]
 
   def create
     head :created
@@ -9,20 +10,33 @@ class Api::V1::RecipesController < ApplicationController
 
   private
 
-  def validate_recipe_presence
+  def render_errors(status:, errors:)
+    render status: status, json: { errors: errors.map { |error| error.as_json } }
+  end
+
+  def validate_steps
+    recipe = params[:recipe]
+    return if recipe.present? && recipe[:steps].present?
+
+    error = ApiError.new(
+      pointer: "/recipe/steps",
+      title: "Missing attribute",
+      detail: "Please specify steps to create recipe",
+    )
+
+    render_errors(status: 400, errors: [error])
+  end
+
+  def validate_recipe
     recipe = params[:recipe]
     return if recipe.present?
 
-    error_response = {
-      errors: [
-        {
-          source: { pointer: "/recipe", },
-          title: "Please specify a recipe",
-          detail: "A top level recipe object is required",
-        },
-      ],
-    }
+    error = ApiError.new(
+      pointer: "/recipe",
+      title: "Missing attribute",
+      detail: "Please specify a recipe",
+    )
 
-    render json: error_response, status: 400
+    render_errors(status: 400, errors: [error])
   end
 end
