@@ -3,7 +3,9 @@
 one:
   recipe: one
   text: MyText
+  order: 1
 
 two:
   recipe: two
   text: MyText
+  order: 2
