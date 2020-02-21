@@ -4,16 +4,20 @@ class Api::V1::RecipesControllerTest < ActionDispatch::IntegrationTest
   test "creates a recipe" do
     steps = [
       {
+        order: 1,
         text: "Get 2 cups of atta",
       },
       {
+        order: 2,
         text: "Boil potatoes",
       },
     ]
 
-    params = { recipe: { title: "Alu Paratha", steps: steps } }
+    params = { recipe: { name: "Alu Paratha", cuisine: Recipe::Cuisine::INDIAN, steps: steps } }
 
-    post api_v1_recipes_url, params: params
+    assert_difference ->{ Recipe.count } => 1, ->{ Step.count } => 2 do
+      post api_v1_recipes_url, params: params
+    end
 
     assert_response :success
   end

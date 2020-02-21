@@ -15,6 +15,10 @@ class ApiError
       title: title,
     }
 
-    result.merge(detail: detail) if detail.present?
+    if detail.present?
+      result.merge!(detail: detail)
+    else
+      result
+    end
   end
 end

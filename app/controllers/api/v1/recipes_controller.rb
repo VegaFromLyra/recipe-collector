@@ -5,7 +5,29 @@ class Api::V1::RecipesController < ApplicationController
   before_action :validate_steps, only: [:create]
 
   def create
-    head :created
+    recipe_params = params[:recipe]
+
+    recipe = Recipe.create do |r|
+      r.name = recipe_params[:name]
+      r.cuisine = recipe_params[:cuisine]
+    end
+
+    recipe_errors = recipe.errors.map do |attr, msg|
+      ApiError.new(pointer: "/recipe/#{attr}", title: "#{attr} - #{msg}")
+    end
+
+    return render_errors(status: 422, errors: recipe_errors) if recipe_errors.present?
+
+    recipe_params[:steps].each do |step_param|
+      step = Step.create(recipe_id: recipe.id, text: step_param[:text], order: step_param[:order])
+      step_errors = step.errors.map do |attr, msg|
+        ApiError.new(pointer: "/recipe/step/#{attr}", title: "#{attr} - #{msg}")
+      end
+
+      return render_errors(status: 422, errors: step_errors) if step_errors.present?
+    end
+
+    render status: :created, json: recipe.as_json
   end
 
   private
