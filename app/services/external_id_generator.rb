@@ -6,7 +6,7 @@ class ExternalIdGenerator
 
   def initialize(id:)
     @id = id
-    @hashids = Hashids.new(Rails.application.credentials.external_id_salt!, MINIMUM_LENGTH, ALPHABET)
+    @hashids = Hashids.new(ENV.fetch("EXTERNAL_ID_SALT"), MINIMUM_LENGTH, ALPHABET)
   end
 
   def call
