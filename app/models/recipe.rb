@@ -20,4 +20,10 @@ class Recipe < ApplicationRecord
     self.external_id = ExternalIdGenerator.new(id: id).call
     save!
   end
+
+  def as_json
+    {
+      external_id: external_id
+    }
+  end
 end

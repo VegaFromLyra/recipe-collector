@@ -19,6 +19,9 @@ class Api::V1::RecipesControllerTest < ActionDispatch::IntegrationTest
       post api_v1_recipes_url, params: params
     end
 
+    response_body = JSON.parse(@response.body).with_indifferent_access
+    assert_not_nil(response_body[:external_id])
+
     assert_response :success
   end
 
