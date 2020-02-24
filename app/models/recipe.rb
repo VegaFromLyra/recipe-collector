@@ -21,9 +21,24 @@ class Recipe < ApplicationRecord
     save!
   end
 
-  def as_json
-    {
-      external_id: external_id
-    }
+  def as_json(options = {})
+    options.merge!({
+      except: common_excluded_attributes,
+      include: {
+        steps: { except: common_excluded_attributes.append(:recipe_id) }
+      }
+    })
+
+    super(options)
+  end
+
+  private
+
+  def common_excluded_attributes
+    [
+      :id,
+      :created_at,
+      :updated_at,
+    ]
   end
 end
