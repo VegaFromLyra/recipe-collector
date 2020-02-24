@@ -1,8 +1,13 @@
 class Api::V1::RecipesController < ApplicationController
   protect_from_forgery
 
-  before_action :validate_recipe
+  before_action :validate_recipe, only: [:create]
   before_action :validate_steps, only: [:create]
+
+  def index
+    all_recipes = Recipe.all.map { |recipe| recipe.as_json }
+    render status: :ok, json: all_recipes
+  end
 
   def create
     recipe_params = params[:recipe]
@@ -27,7 +32,8 @@ class Api::V1::RecipesController < ApplicationController
       return render_errors(status: 422, errors: step_errors) if step_errors.present?
     end
 
-    render status: :created, json: recipe.as_json
+
+    render status: :created, json: recipe.as_json(options)
   end
 
   private
