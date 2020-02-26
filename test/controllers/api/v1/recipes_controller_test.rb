@@ -61,5 +61,33 @@ class Api::V1::RecipesControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal(@response.body, error_response)
   end
+
+  test "step without content results in an error" do
+    steps = [
+      {
+        order: 1,
+      },
+      {
+        order: 2,
+        text: "Boil potatoes",
+      },
+    ]
+
+    params = { recipe: { name: "Alu Paratha", cuisine: Recipe::Cuisine::INDIAN, steps: steps } }
+    post api_v1_recipes_url, params: params
+
+    assert_response 422
+
+    error_response = {
+      errors: [
+        {
+          source: { pointer: "/recipe/step/text", },
+          title: "text - can't be blank",
+        },
+      ]
+    }.to_json
+
+    assert_equal(@response.body, error_response)
+  end
 end
 
