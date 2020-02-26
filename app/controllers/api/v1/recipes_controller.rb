@@ -32,8 +32,7 @@ class Api::V1::RecipesController < ApplicationController
       return render_errors(status: 422, errors: step_errors) if step_errors.present?
     end
 
-
-    render status: :created, json: recipe.as_json(options)
+    render status: :created, json: recipe.as_json
   end
 
   private
