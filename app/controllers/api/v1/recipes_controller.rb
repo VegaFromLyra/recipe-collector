@@ -17,25 +17,29 @@ class Api::V1::RecipesController < ApplicationController
       r.cuisine = recipe_params[:cuisine]
     end
 
-    recipe_errors = recipe.errors.map do |attr, msg|
-      ApiError.new(pointer: "/recipe/#{attr}", title: "#{attr} - #{msg}")
-    end
-
+    recipe_errors = collect_errors(model: recipe, pointer_prefix: "/recipe")
     return render_errors(status: 422, errors: recipe_errors) if recipe_errors.present?
 
-    recipe_params[:steps].each do |step_param|
-      step = Step.create(recipe_id: recipe.id, text: step_param[:text], order: step_param[:order])
-      step_errors = step.errors.map do |attr, msg|
-        ApiError.new(pointer: "/recipe/step/#{attr}", title: "#{attr} - #{msg}")
-      end
-
-      return render_errors(status: 422, errors: step_errors) if step_errors.present?
+    steps = recipe_params[:steps].map do |step_param|
+      Step.create(recipe_id: recipe.id, text: step_param[:text], order: step_param[:order])
     end
+
+    step_errors = steps.map do |step|
+      collect_errors(model: step, pointer_prefix: "/recipe/step")
+    end.flatten
+
+    return render_errors(status: 422, errors: step_errors) if step_errors.present?
 
     render status: :created, json: recipe.as_json
   end
 
   private
+
+  def collect_errors(model:, pointer_prefix:)
+    model.errors.map do |attr, msg|
+      ApiError.new(pointer: "#{pointer_prefix}/#{attr}", title: "#{attr} - #{msg}")
+    end
+  end
 
   def render_errors(status:, errors:)
     render status: status, json: { errors: errors.map { |error| error.as_json } }
