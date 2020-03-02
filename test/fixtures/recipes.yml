@@ -4,8 +4,10 @@ one:
   name: "Alu Paratha"
   cuisine: "Indian"
   external_id: "abcdef"
+  is_active: true
 
 two:
   name: "Chicken Tikka"
   cuisine: "Indian"
   external_id: "pqrst"
+  is_active: false
