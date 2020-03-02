@@ -91,10 +91,27 @@ class Api::V1::RecipesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "deleting a recipe sets it to inactive" do
-    recipe = Recipe.first
+    recipe = Recipe.where(is_active: true).first
 
     delete "/api/v1/recipes/#{recipe.external_id}"
     assert_equal(recipe.reload.is_active, false)
+  end
+
+  test "deleting a recipe with an invalid id results in an error" do
+    delete "/api/v1/recipes/idonotexist"
+    assert_response 404
+
+    error_response = {
+      errors: [
+        {
+          source: { pointer: "/external_id" },
+          title: "Resource not found",
+          detail: "There is no active recipe by this id",
+        },
+      ]
+    }.to_json
+
+    assert_equal(@response.body, error_response)
   end
 end
 
