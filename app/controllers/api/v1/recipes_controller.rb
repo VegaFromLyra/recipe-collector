@@ -3,9 +3,10 @@ class Api::V1::RecipesController < ApplicationController
 
   before_action :validate_recipe, only: [:create]
   before_action :validate_steps, only: [:create]
+  before_action :validate_external_id, only: [:delete]
 
   def index
-    all_recipes = Recipe.all.map { |recipe| recipe.as_json }
+    all_recipes = Recipe.active.all.map { |recipe| recipe.as_json }
     render status: :ok, json: all_recipes
   end
 
@@ -33,7 +34,27 @@ class Api::V1::RecipesController < ApplicationController
     render status: :created, json: recipe.as_json
   end
 
+  def destroy
+    external_id = params[:id]
+    recipe = Recipe.find_by(external_id: external_id)
+
+    recipe.is_active = false
+    recipe.save!
+  end
+
   private
+
+  def validate_external_id
+    recipe = Recipe.find_by(external_id: params[:id])
+    return if recipe.present?
+
+    not_found_error = ApiError.new(
+      pointer: "/external_id",
+      title: "Resource not found",
+      detail: "Recipe does not exist",
+    )
+    render_errors(status: 404, errors: [not_found_error])
+  end
 
   def collect_errors(model:, pointer_prefix:)
     model.errors.map do |attr, msg|

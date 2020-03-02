@@ -16,6 +16,8 @@ class Recipe < ApplicationRecord
   validates :name, presence: true
   validates :cuisine, inclusion: { in: Cuisine.all, message: "%{value} is not a valid cuisine" }
 
+  scope :active, -> { where(is_active: true) }
+
   def set_external_id
     self.external_id = ExternalIdGenerator.new(id: id).call
     save!
