@@ -89,5 +89,12 @@ class Api::V1::RecipesControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal(@response.body, error_response)
   end
+
+  test "deleting a recipe sets it to inactive" do
+    recipe = Recipe.first
+
+    delete "/api/v1/recipes/#{recipe.external_id}"
+    assert_equal(recipe.reload.is_active, false)
+  end
 end
 
