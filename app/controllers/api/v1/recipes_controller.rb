@@ -6,7 +6,10 @@ class Api::V1::RecipesController < ApplicationController
   before_action :validate_external_id, only: [:destroy]
 
   def index
-    all_recipes = Recipe.active.all.map { |recipe| recipe.as_json }
+    page_number = params[:page].to_i
+    per_page = params[:limit].to_i
+
+    all_recipes = Recipe.active.page(page_number).per(per_page).all.map { |recipe| recipe.as_json }
     render status: :ok, json: all_recipes
   end
 
