@@ -1,6 +1,3 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-
 class Grid extends React.Component {
   render() {
     return (
@@ -11,4 +8,4 @@ class Grid extends React.Component {
   }
 }
 
-export { Grid }
+export default Grid;
