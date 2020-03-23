@@ -1,8 +1,30 @@
+import Square from './square'
+
 class Grid extends React.Component {
+  renderSquare() {
+    return (
+      <Square />
+    );
+  }
+
   render() {
     return (
-      <div>
-        <h1> Recipes are coming...</h1>
+      <div className="grid">
+        <div className="board-row">
+          { this.renderSquare() }
+          { this.renderSquare() }
+          { this.renderSquare() }
+        </div>
+        <div className="board-row">
+          { this.renderSquare() }
+          { this.renderSquare() }
+          { this.renderSquare() }
+        </div>
+        <div className="board-row">
+          { this.renderSquare() }
+          { this.renderSquare() }
+          { this.renderSquare() }
+        </div>
       </div>
     );
   }
