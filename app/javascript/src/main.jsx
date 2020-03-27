@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import Grid from '../grid'
+import Grid from './grid'
 import '../css/main.css'
 
 document.addEventListener('DOMContentLoaded', () => {
