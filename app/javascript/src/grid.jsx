@@ -14,7 +14,7 @@ class Grid extends React.Component {
   }
 
   componentDidMount() {
-    axios.get("/api/v1/recipes?page=1&limit=3")
+    axios.get("/api/v1/recipes")
       .then((response) => {
         this.setState({
           isLoaded: true,
@@ -48,9 +48,11 @@ class Grid extends React.Component {
       return (
         <div className="py-5">
           <div className="flex flex-wrap mb-4">
-            <Square name="Semiya upma"/>
-            <Square name="Green chutney"/>
-            <Square name="Dosa batter"/>
+            {
+              recipes.map(recipe => (
+                <Square name={recipe.name}/>
+              ))
+            }
           </div>
         </div>
       );
