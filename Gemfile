@@ -7,7 +7,7 @@ ruby '2.6.5'
 gem 'figaro', '~> 1.1'
 gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 gem 'pg', '~> 1.2', '>= 1.2.2'
-gem 'kaminari', '~> 0.17.0'
+gem 'kaminari', '~> 1.2.1'
 # Use Puma as the app server
 gem 'puma', '~> 4.3.3'
 # Use SCSS for stylesheets
